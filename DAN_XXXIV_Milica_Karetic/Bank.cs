@@ -19,7 +19,7 @@ namespace DAN_XXXIV_Milica_Karetic
         /// Method for withdraw money
         /// </summary>
         /// <param name="amount"></param>
-        public void Withdraw(int amount)
+        private void Withdraw(int amount)
         {
             //lock critical section
             lock (locker)
@@ -27,13 +27,13 @@ namespace DAN_XXXIV_Milica_Karetic
                 //if there is no enough money in bank
                 if(maxAmount < amount)
                 {
-                    Console.WriteLine("Transaction rejected." + Thread.CurrentThread.Name + " try to withdraw " + amount + " RSD.");
+                    Console.WriteLine("Transaction rejected." + Thread.CurrentThread.Name + " try to withdraw " + amount + " RSD.\n");
                 }
                 else
                 {
                     Console.WriteLine(Thread.CurrentThread.Name + " try to withdraw " + amount + " RSD.");
-                    maxAmount = maxAmount - amount;
-                    Console.WriteLine("In bank left " + maxAmount + " RSD.");
+                    maxAmount -= amount;
+                    Console.WriteLine("In bank left " + maxAmount + " RSD.\n");
                 }
             }          
         }
@@ -41,7 +41,7 @@ namespace DAN_XXXIV_Milica_Karetic
         /// <summary>
         /// Do transaction method calls withdraw method and passes random amount to withdraw method
         /// </summary>
-        public void DoTransaction()
+        internal void DoTransaction()
         {
             Withdraw(rnd.Next(100, 10001));
         }
