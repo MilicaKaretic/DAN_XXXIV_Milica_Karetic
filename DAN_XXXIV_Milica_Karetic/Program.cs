@@ -16,7 +16,7 @@ namespace DAN_XXXIV_Milica_Karetic
             bool b = Int32.TryParse(s, out Num);
             while (!b || Num < 0)
             {
-                Console.Write("Invalid input. Try again: ");
+                Console.WriteLine("Invalid input. Try again: ");
                 s = Console.ReadLine();
                 b = Int32.TryParse(s, out Num);
             }
@@ -25,11 +25,14 @@ namespace DAN_XXXIV_Milica_Karetic
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Please enter first number");
+            //first line clients
+            Console.WriteLine("Please enter number for first cash machine");
             int firstNum = ValidPositiveNumber();
-            Console.WriteLine("Please enter second number");
+            //second line clients
+            Console.WriteLine("Please enter number for second cash machine");
             int secondNum = ValidPositiveNumber();
 
+            //number of threads
             int sumNum = firstNum + secondNum;
 
             Thread[] threads = new Thread[sumNum];
@@ -37,7 +40,10 @@ namespace DAN_XXXIV_Milica_Karetic
 
             for (int i = 0; i < sumNum; i++)
             {
-                Thread t = new Thread(new ThreadStart(b.DoTransactions));
+                Thread t = new Thread(new ThreadStart(b.DoTransaction))
+                {
+                    Name = string.Format("Client_{0}", i + 1)
+                };
                 threads[i] = t;
             }
 
@@ -46,6 +52,12 @@ namespace DAN_XXXIV_Milica_Karetic
                 threads[i].Start();
             }
 
+            for (int i = 0; i < sumNum; i++)
+            {
+                threads[i].Join();
+            }
+
+            Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();
         }
     }

@@ -2,32 +2,48 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DAN_XXXIV_Milica_Karetic
 {
     class Bank
     {
+        //amount in bank
         public static int maxAmount = 10000;
+        private readonly object locker = new object();
 
         Random rnd = new Random();
 
-        public Bank()
+        /// <summary>
+        /// Method for withdraw money
+        /// </summary>
+        /// <param name="amount"></param>
+        public void Withdraw(int amount)
         {
-
-        }
-
-        public int Withdraw(int amount)
-        {
-            return 0;
-        }
-
-        public void DoTransactions()
-        {
-            for (int i = 0; i < 100; i++)
+            //lock critical section
+            lock (locker)
             {
-                Withdraw(rnd.Next(100, 10000));
-            }
+                //if there is no enough money in bank
+                if(maxAmount < amount)
+                {
+                    Console.WriteLine("Transaction rejected." + Thread.CurrentThread.Name + " try to withdraw " + amount + " RSD.");
+                }
+                else
+                {
+                    Console.WriteLine(Thread.CurrentThread.Name + " try to withdraw " + amount + " RSD.");
+                    maxAmount = maxAmount - amount;
+                    Console.WriteLine("In bank left " + maxAmount + " RSD.");
+                }
+            }          
+        }
+
+        /// <summary>
+        /// Do transaction method calls withdraw method and passes random amount to withdraw method
+        /// </summary>
+        public void DoTransaction()
+        {
+            Withdraw(rnd.Next(100, 10001));
         }
     }
 }
